@@ -1,3 +1,4 @@
+import codecs
 import os
 import shutil
 from zipfile import ZipFile
@@ -44,6 +45,8 @@ def test_check_content_pdf():
 def test_check_content_csv():
     with zipfile.ZipFile(os.path.abspath("./resources/archive.zip")) as myzip2:
         with myzip2.open('resources/example1.csv') as csvFile:
-            table = csv.reader(csvFile)
-            for row in table:
-                assert 'Harold Campbell' in row
+            table = csv.reader(codecs.iterdecode(csvFile, 'utf-8'))
+            for line_no, line in enumerate(table, 1):
+                if line_no == 2:
+                    assert line[1] == '2016-01-01'
+
